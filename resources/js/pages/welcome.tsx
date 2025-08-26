@@ -185,7 +185,7 @@ export default function Welcome({ statistics, donation_growth, donor_growth, fla
 
                 {/* Statistics Cards */}
                 <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <Card className="bg-white/80 backdrop-blur-sm border-slate-200 dark:bg-slate-800/80 dark:border-slate-700">
                             <CardHeader className="pb-3">
                                 <div className="flex items-center justify-between">
@@ -239,19 +239,7 @@ export default function Welcome({ statistics, donation_growth, donor_growth, fla
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-gradient-to-r from-teal-500 to-green-500 text-white">
-                            <CardHeader className="pb-3">
-                                <CardTitle className="text-sm font-medium text-teal-100">Dampak Bulan Ini</CardTitle>
-                                <div className="text-2xl font-bold">
-                                    {statistics.donors_this_month} keluarga
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-xs text-teal-100">
-                                    Mendapat bantuan kesehatan
-                                </div>
-                            </CardContent>
-                        </Card>
+
                     </div>
                 </section>
 
@@ -298,7 +286,7 @@ export default function Welcome({ statistics, donation_growth, donor_growth, fla
                             <DialogTrigger asChild>
                                 <Button size="lg" variant="secondary" className="bg-white text-teal-600 hover:bg-gray-50 px-8 py-4 text-lg">
                                     <Heart className="w-5 h-5 mr-2" />
-                                    Mulai Berdonasi Sekarang
+                                    Bergabung Menjadi Donatur
                                 </Button>
                             </DialogTrigger>
                         </Dialog>
