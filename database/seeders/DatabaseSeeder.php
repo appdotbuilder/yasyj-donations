@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Administrator',
             'email' => 'anugerahsehatjepara@gmail.com',
+            'whatsapp_number' => '085183251678',
             'password' => bcrypt('Admin123'),
             'role' => 'admin',
         ]);

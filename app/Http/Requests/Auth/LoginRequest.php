@@ -27,7 +27,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -41,15 +41,41 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
+        $credential = $this->input('email');
+        $password = $this->input('password');
+        
+        // Try to authenticate with different credential types
+        $attempts = [];
+        
+        // If it looks like an email
+        if (filter_var($credential, FILTER_VALIDATE_EMAIL)) {
+            $attempts[] = ['email' => $credential, 'password' => $password];
+        }
+        
+        // If it looks like a phone number (contains only digits, +, -, spaces, parentheses)
+        if (preg_match('/^[\d\+\-\s\(\)]+$/', $credential)) {
+            // Clean the phone number (remove spaces, dashes, parentheses)
+            $cleanedNumber = preg_replace('/[\s\-\(\)]/', '', $credential);
+            $attempts[] = ['whatsapp_number' => $cleanedNumber, 'password' => $password];
+            $attempts[] = ['whatsapp_number' => $credential, 'password' => $password];
+        }
+        
+        // Always try as username (name field)
+        $attempts[] = ['name' => $credential, 'password' => $password];
+        
+        // Try each authentication method
+        foreach ($attempts as $credentials) {
+            if (Auth::attempt($credentials, $this->boolean('remember'))) {
+                RateLimiter::clear($this->throttleKey());
+                return;
+            }
         }
 
-        RateLimiter::clear($this->throttleKey());
+        RateLimiter::hit($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'email' => __('auth.failed'),
+        ]);
     }
 
     /**
