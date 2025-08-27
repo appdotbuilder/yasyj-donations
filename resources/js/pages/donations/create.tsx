@@ -33,6 +33,7 @@ export default function CreateDonation({ donors, statuses }: CreateDonationProps
         notes: '',
         status: 'confirmed', // Default status to confirmed
         donation_date: new Date().toISOString().split('T')[0], // Default to today's date
+        proof_of_payment: null as File | null,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -56,6 +57,11 @@ export default function CreateDonation({ donors, statuses }: CreateDonationProps
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = e.target.value.replace(/[^\d]/g, ''); // Remove non-digits
         setData('amount', value); // Store as plain number string
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        setData('proof_of_payment', file);
     };
 
     return (
@@ -166,6 +172,25 @@ export default function CreateDonation({ donors, statuses }: CreateDonationProps
                                     </Select>
                                     {errors.status && (
                                         <p className="text-red-500 text-sm">{errors.status}</p>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="proof_of_payment">Bukti Transfer/Pembayaran (opsional)</Label>
+                                    <Input
+                                        id="proof_of_payment"
+                                        type="file"
+                                        accept="image/*,.pdf"
+                                        onChange={handleFileChange}
+                                        className={errors.proof_of_payment ? 'border-red-500' : ''}
+                                    />
+                                    {errors.proof_of_payment && (
+                                        <p className="text-red-500 text-sm">{errors.proof_of_payment}</p>
+                                    )}
+                                    {data.proof_of_payment && (
+                                        <p className="text-sm text-green-600">
+                                            File dipilih: {data.proof_of_payment.name}
+                                        </p>
                                     )}
                                 </div>
 
