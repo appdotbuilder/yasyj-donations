@@ -271,16 +271,18 @@ export default function Dashboard({ statistics, recent_donations, top_donors, mo
                                 </div>
                             </Link>
                             
+                            <Link href={route('donations.create')}>
+                                <div className="p-4 border rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+                                    <Plus className="w-8 h-8 text-teal-600 mb-2" />
+                                    <h3 className="font-medium text-slate-900 dark:text-white">Tambah Donasi</h3>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">Catat donasi baru dari donatur</p>
+                                </div>
+                            </Link>
+                            
                             <div className="p-4 border rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors opacity-75">
                                 <MessageSquare className="w-8 h-8 text-teal-600 mb-2" />
                                 <h3 className="font-medium text-slate-900 dark:text-white">WhatsApp Blast</h3>
                                 <p className="text-sm text-slate-600 dark:text-slate-400">Kirim notifikasi ke donatur (Segera)</p>
-                            </div>
-                            
-                            <div className="p-4 border rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors opacity-75">
-                                <TrendingUp className="w-8 h-8 text-teal-600 mb-2" />
-                                <h3 className="font-medium text-slate-900 dark:text-white">Laporan Lengkap</h3>
-                                <p className="text-sm text-slate-600 dark:text-slate-400">Export data dan analisis (Segera)</p>
                             </div>
                         </div>
                     </CardContent>

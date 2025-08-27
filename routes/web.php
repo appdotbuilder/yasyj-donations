@@ -12,13 +12,17 @@ Route::get('/health-check', function () {
 
 // Public donation statistics and inquiry form
 Route::get('/', [App\Http\Controllers\DonationController::class, 'index'])->name('home');
-Route::post('/donation-inquiry', [App\Http\Controllers\DonationController::class, 'store'])->name('donation-inquiry.store');
+Route::post('/donation-inquiry', [App\Http\Controllers\DonationInquiryController::class, 'store'])->name('donation-inquiry.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
     
     // Donor management routes
     Route::resource('donors', App\Http\Controllers\DonorController::class);
+    
+    // Donation management routes
+    Route::get('donations/create', [App\Http\Controllers\DonationController::class, 'create'])->name('donations.create');
+    Route::post('donations', [App\Http\Controllers\DonationController::class, 'store'])->name('donations.store');
 });
 
 require __DIR__.'/settings.php';

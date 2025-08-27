@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreDonationInquiryRequest;
+use App\Http\Requests\StoreDonationRequest;
 use App\Models\Donation;
-use App\Models\DonationInquiry;
 use App\Models\Donor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -73,12 +72,30 @@ class DonationController extends Controller
     }
 
     /**
-     * Store a donation inquiry.
+     * Show the form for creating a new donation.
      */
-    public function store(StoreDonationInquiryRequest $request)
+    public function create()
     {
-        DonationInquiry::create($request->validated());
-
-        return redirect()->back()->with('success', 'Terima kasih atas minat Anda! Tim kami akan menghubungi Anda segera.');
+        $donors = Donor::all(['id', 'full_name', 'whatsapp_number']);
+        return Inertia::render('donations/create', [
+            'donors' => $donors,
+            'statuses' => ['confirmed', 'pending', 'cancelled'],
+        ]);
     }
+
+    /**
+     * Store a newly created donation in storage.
+     */
+    public function store(StoreDonationRequest $request)
+    {
+        $donation = Donation::create($request->validated());
+
+        // Update donor's total donations and count
+        $donation->donor->updateTotals();
+
+        return redirect()->route('donors.show', $donation->donor_id)
+            ->with('success', 'Donasi berhasil ditambahkan.');
+    }
+
+
 }
