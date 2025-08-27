@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $donor_id
  * @property string $amount
  * @property string|null $notes
+ * @property string|null $proof_of_payment_path
  * @property string $status
  * @property string $donation_date
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Donation whereDonorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Donation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Donation whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Donation whereProofOfPaymentPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Donation whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Donation whereUpdatedAt($value)
  * @method static \Database\Factories\DonationFactory factory($count = null, $state = [])
@@ -47,6 +49,7 @@ class Donation extends Model
         'donor_id',
         'amount',
         'notes',
+        'proof_of_payment_path',
         'status',
         'donation_date',
     ];

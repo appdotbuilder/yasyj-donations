@@ -4,6 +4,7 @@ use App\Models\Donation;
 use App\Models\DonationInquiry;
 use App\Models\Donor;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
@@ -118,4 +119,84 @@ test('donor show page displays donation history', function () {
         ->has('donor')
         ->where('donor.id', $donor->id)
     );
+});
+
+test('donation can be created without proof of payment', function () {
+    $user = User::factory()->create();
+    $donor = Donor::factory()->create();
+    
+    $donationData = [
+        'donor_id' => $donor->id,
+        'amount' => 100000,
+        'notes' => 'Test donation',
+        'status' => 'confirmed',
+        'donation_date' => '2024-01-15',
+    ];
+
+    $response = $this->actingAs($user)
+                     ->post('/donations', $donationData);
+
+    $response->assertRedirect();
+    
+    $donation = Donation::where('donor_id', $donor->id)
+                        ->where('amount', 100000)
+                        ->first();
+    
+    expect($donation)->not()->toBeNull();
+    expect($donation->notes)->toBe('Test donation');
+    expect($donation->status)->toBe('confirmed');
+    expect($donation->proof_of_payment_path)->toBeNull();
+});
+
+test('donation can be created with proof of payment file', function () {
+    $user = User::factory()->create();
+    $donor = Donor::factory()->create();
+    
+    $file = \Illuminate\Http\UploadedFile::fake()->image('receipt.jpg', 800, 600);
+    
+    $donationData = [
+        'donor_id' => $donor->id,
+        'amount' => 150000,
+        'notes' => 'Test donation with proof',
+        'status' => 'confirmed',
+        'donation_date' => '2024-01-15',
+        'proof_of_payment' => $file,
+    ];
+
+    $response = $this->actingAs($user)
+                     ->post('/donations', $donationData);
+
+    $response->assertRedirect();
+    
+    $donation = Donation::where('donor_id', $donor->id)
+                        ->where('amount', 150000)
+                        ->first();
+    
+    expect($donation)->not()->toBeNull();
+    expect($donation->proof_of_payment_path)->not()->toBeNull();
+    expect($donation->proof_of_payment_path)->toContain('proof-of-payments/');
+    
+    // Check if file exists
+    Storage::disk('public')->assertExists($donation->proof_of_payment_path);
+});
+
+test('donation creation validates file types', function () {
+    $user = User::factory()->create();
+    $donor = Donor::factory()->create();
+    
+    $invalidFile = \Illuminate\Http\UploadedFile::fake()->create('document.txt', 100, 'text/plain');
+    
+    $donationData = [
+        'donor_id' => $donor->id,
+        'amount' => 100000,
+        'notes' => 'Test donation',
+        'status' => 'confirmed',
+        'donation_date' => '2024-01-15',
+        'proof_of_payment' => $invalidFile,
+    ];
+
+    $response = $this->actingAs($user)
+                     ->post('/donations', $donationData);
+
+    $response->assertSessionHasErrors(['proof_of_payment']);
 });

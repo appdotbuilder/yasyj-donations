@@ -26,6 +26,7 @@ class StoreDonationRequest extends FormRequest
             'donor_id' => ['required', 'exists:donors,id'],
             'amount' => ['required', 'numeric', 'min:1000'],
             'notes' => ['nullable', 'string', 'max:500'],
+            'proof_of_payment' => ['nullable', 'file', 'mimes:jpeg,png,jpg,pdf', 'max:2048'],
             'status' => ['required', Rule::in(['pending', 'confirmed', 'cancelled'])],
             'donation_date' => ['required', 'date'],
         ];
@@ -45,6 +46,9 @@ class StoreDonationRequest extends FormRequest
             'amount.numeric' => 'Jumlah donasi harus berupa angka.',
             'amount.min' => 'Jumlah donasi minimal Rp 1.000.',
             'notes.max' => 'Catatan tidak boleh lebih dari 500 karakter.',
+            'proof_of_payment.file' => 'Bukti pembayaran harus berupa file.',
+            'proof_of_payment.mimes' => 'Bukti pembayaran harus berformat JPEG, PNG, JPG, atau PDF.',
+            'proof_of_payment.max' => 'Ukuran bukti pembayaran maksimal 2MB.',
             'status.required' => 'Status donasi harus dipilih.',
             'status.in' => 'Status donasi tidak valid.',
             'donation_date.required' => 'Tanggal donasi harus diisi.',

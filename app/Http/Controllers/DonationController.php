@@ -88,7 +88,20 @@ class DonationController extends Controller
      */
     public function store(StoreDonationRequest $request)
     {
-        $donation = Donation::create($request->validated());
+        $validatedData = $request->validated();
+
+        // Handle file upload if provided
+        if ($request->hasFile('proof_of_payment')) {
+            $file = $request->file('proof_of_payment');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('proof-of-payments', $filename, 'public');
+            $validatedData['proof_of_payment_path'] = $path;
+        }
+
+        // Remove the proof_of_payment key as it's not in the database
+        unset($validatedData['proof_of_payment']);
+
+        $donation = Donation::create($validatedData);
 
         // Update donor's total donations and count
         $donation->donor->updateTotals();

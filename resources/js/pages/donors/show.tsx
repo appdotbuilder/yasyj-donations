@@ -3,12 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Edit, Heart, Phone, User, Calendar, MessageSquare, Trash2 } from 'lucide-react';
+import { ArrowLeft, Edit, Heart, Phone, User, Calendar, MessageSquare, Trash2, FileImage, Download } from 'lucide-react';
 
 interface Donation {
     id: number;
     amount: string;
     notes: string | null;
+    proof_of_payment_path: string | null;
     status: string;
     donation_date: string;
     created_at: string;
@@ -265,6 +266,21 @@ export default function ShowDonor({ donor }: ShowDonorProps) {
                                                         {donation.notes && (
                                                             <div className="mt-2 text-sm text-slate-600 dark:text-slate-400">
                                                                 <strong>Catatan:</strong> {donation.notes}
+                                                            </div>
+                                                        )}
+
+                                                        {donation.proof_of_payment_path && (
+                                                            <div className="mt-2">
+                                                                <a 
+                                                                    href={`/storage/${donation.proof_of_payment_path}`} 
+                                                                    target="_blank" 
+                                                                    rel="noopener noreferrer"
+                                                                    className="inline-flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
+                                                                >
+                                                                    <FileImage className="w-4 h-4" />
+                                                                    Lihat Bukti Pembayaran
+                                                                    <Download className="w-3 h-3" />
+                                                                </a>
                                                             </div>
                                                         )}
                                                     </div>

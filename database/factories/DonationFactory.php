@@ -29,6 +29,11 @@ class DonationFactory extends Factory
             'donor_id' => Donor::factory(),
             'amount' => $this->faker->randomFloat(2, 50000, 1000000), // 50k to 1M IDR
             'notes' => $this->faker->optional(0.3)->sentence(),
+            'proof_of_payment_path' => $this->faker->optional(0.4)->randomElement([
+                'proof-of-payments/sample-receipt.jpg',
+                'proof-of-payments/bank-transfer.png',
+                'proof-of-payments/payment-proof.pdf'
+            ]),
             'status' => $this->faker->randomElement(['confirmed', 'confirmed', 'confirmed', 'pending']), // More confirmed
             'donation_date' => $this->faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
         ];
